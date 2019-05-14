@@ -27,5 +27,61 @@
 % Intended for use with LilyPond documents created by lyluatex
 % but works with arbitrary images too
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{lyluaxmp}
+\ProvidesPackage{lyluatexmp}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% lyluatex and lyluatex-lib
+%
+
+% This already loads luatexbase, luaotfload, xkeyval, graphicx
+% minibox, environ, currfile, pdfpages, varwidth and metalogo
+\RequirePackage{lyluatex}
+
+% Options
+\catcode`-=11
+\directlua{
+  xmp = require(kpse.find_file("lyluatexmp.lua") or "lyluatexmp.lua")
+  xmp.declare_package_options({
+    ['align'] = {'center', 'left', 'right'},
+  })
+}
+\catcode`-=12
+
+% lyluatexmp “Logo”
+\newcommand{\lyluatexmp}{\textit{ly}\LuaTeX\textsc{mp}}
+
+% Command to change options during the document
+\newcommand{\xmpsetoption}[2]{\directlua{xmp.set_property([[#1]], [[#2]])}}
+
+%
+% lyluatex and lyluatex-lib
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Conditionally load scrextend for the \ifthispageodd command.
+% TODO: Maybe this is obsolete through using lyluatex or the
+% same functionality as there ...
+\makeatletter
+\@ifundefined{KOMAClassName}{\RequirePackage{scrextend}}{}
+\makeatother
+
+% Allow definition of the new float environment
+\RequirePackage{newfloat}
+
+% TODO: Don't require this package but make behaviour dependent on
+% its inclusion (or xcolor)
+\RequirePackage{color}
+
+% If the following packages are included before lyluatexmp
+% versions of the musicexampleenvironment are automatically
+% created (courtesy of the newfloat package):
+% - fltpage  -> FPmusicexample (caption on different page)
+% - rotating -> sidewaysmusicexample (rotated example)
+% - sidecap  -> SCmusicexample (caption besides the example)
+% - wrapfig  -> wrapmusicexample (example with text floating around it)
+%
+% See the documentation of the packages for more information
+
+% Format the captions of the float environment
+% (TODO: Try making them coherent with the manually typeset
+% captions of the non-float items)
+\RequirePackage{caption}
