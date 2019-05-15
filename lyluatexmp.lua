@@ -13,14 +13,8 @@ local optlib = require(kpse.find_file("lyluatex-options.lua") or "lyluatex-optio
 
 local lfs = require 'lfs'
 
-local OPTIONS = {}  -- Store package options
 local xmp = {}      -- namespace for the returned table
-xmp.Example = {}  -- Store local options for a single example (?)
 
-
-function xmp.set_property(k, v)
-    k, v = optlib.sanitize_option('xmp', k, v)
-    if k then xmp.Example[k] = v end
-end
+-- NOTE: This is completely empty so far
 
 return xmp
