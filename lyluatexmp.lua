@@ -9,28 +9,18 @@ local err, warn, info, log = luatexbase.provides_module({
 })
 
 local lib = require(kpse.find_file("lyluatex-lib.lua") or "lyluatex-lib.lua")
+local optlib = require(kpse.find_file("lyluatex-options.lua") or "lyluatex-options.lua")
 
 local lfs = require 'lfs'
 
 local OPTIONS = {}  -- Store package options
-local Example = {}  -- Store local options for a single example (?)
 local xmp = {}      -- namespace for the returned table
-
-
-function xmp.declare_package_options(options)
-  OPTIONS = options
-  lib.declare_package_options(options, 'xmp')
-end
-
-
-function xmp.is_neg(k, _)
-  lib.is_neg(OPTIONS, k)
-end
+xmp.Example = {}  -- Store local options for a single example (?)
 
 
 function xmp.set_property(k, v)
-    k, v = lib.process_options(OPTIONS, k, v)
-    if k then Example[k] = v end
+    k, v = optlib.sanitize_option('xmp', k, v)
+    if k then xmp.Example[k] = v end
 end
 
 return xmp

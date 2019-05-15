@@ -41,8 +41,11 @@
 \catcode`-=11
 \directlua{
   xmp = require(kpse.find_file("lyluatexmp.lua") or "lyluatexmp.lua")
-  xmp.declare_package_options({
+  opt = require(kpse.find_file("lyluatex-options.lua") or "lyluatex-options.lua")
+  opt.declare_package_options('xmp', 'opt', {
     ['align'] = {'center', 'left', 'right'},
+    ['name'] = {'Music Example', opt.is_str },
+    ['listname'] = {'List of Music Examples', opt.is_str },
   })
 }
 \catcode`-=12
@@ -51,7 +54,7 @@
 \newcommand{\lyluatexmp}{\textit{ly}\LuaTeX\textsc{mp}}
 
 % Command to change options during the document
-\newcommand{\xmpsetoption}[2]{\directlua{xmp.set_property([[#1]], [[#2]])}}
+\newcommand{\xmpsetoption}[2]{\directlua{opt.set_option('xmp', [[#1]], [[#2]])}}
 
 %
 % lyluatex and lyluatex-lib
@@ -85,3 +88,12 @@
 % (TODO: Try making them coherent with the manually typeset
 % captions of the non-float items)
 \RequirePackage{caption}
+
+\DeclareFloatingEnvironment[%
+	fileext=loxmp,
+	listname={\directlua{tex.sprint(opt.get_option('xmp', 'listname'))}},
+	name={\directlua{tex.sprint(opt.get_option('xmp', 'name'))}},
+	placement=htpb]
+	{lymusxmp}
+
+\newcommand*{\listofmusicexamples}{\listoflymusxmps}
