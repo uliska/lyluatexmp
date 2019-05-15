@@ -4,3 +4,6 @@
 *.pdf
 *.synctex.gz
 */tmp-ly/*
+*.fls
+*.fdb_latexmk
+*.loxmp
