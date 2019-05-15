@@ -1,26 +1,22 @@
-\documentclass{scrbook}
-\usepackage[staffsize=12]{lyluatex}
-\usepackage[listname="Notenbeispiele"]{lyluatexmp}
+\documentclass{scrartcl}
+% When lyluatex is *not* loaded it will implicitly be loaded without options
+\usepackage[staffsize=26]{lyluatex}
+\usepackage[%
+  listname=Notenbeispiele,%
+  name=Notenbeispiel]{lyluatexmp}
 
-%\renewcommand*{\musicexampleformat}{\musicexamplename~\themusicexample}
 \begin{document}
-\part{Part}
-\chapter{Chapter}
-\section{Section}
 \lyluatexmp
 
+% To be wrapped in "speaking" command
+% \musicexample[properties]{content-or-filename}
 \begin{lymusxmp}
-\lilypond{ c' d' e' f' g' }
+\begin{lilypond}
+  { c' d' e' f' g' }
+\end{lilypond}
 \caption{Test-Caption}
 \end{lymusxmp}
 
-\directlua{tex.sprint(opt.get_option('xmp', 'name'))}
-
-%\directlua{opt.get_package_option('xmp', 'listname')}
-
-
-
 \listofmusicexamples
-
 
 \end{document}
