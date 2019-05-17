@@ -40,13 +40,14 @@
 % Options
 \catcode`-=11
 \directlua{
-  xmp = require(kpse.find_file("lyluatexmp.lua") or "lyluatexmp.lua")
-  opt = require(kpse.find_file("lyluatex-options.lua") or "lyluatex-options.lua")
-  opt.declare_package_options('xmp', 'opt', {
+  xmp_opts = lyluatex_opt.Opts:new('xmp_opts', {
     ['align'] = {'center', 'left', 'right'},
-    ['name'] = {'Music Example', opt.is_str },
-    ['listname'] = {'List of Music Examples', opt.is_str },
+    ['name'] = {'Music Example', lyluatex_opt.is_str },
+    ['listname'] = {'List of Music Examples', lyluatex_opt.is_str },
   })
+}
+\directlua{
+  lyluatexmp = require(kpse.find_file("lyluatexmp.lua") or "lyluatexmp.lua")
 }
 \catcode`-=12
 
@@ -54,7 +55,9 @@
 \newcommand{\lyluatexmp}{\textit{ly}\LuaTeX\textsc{mp}}
 
 % Command to change options during the document
-\newcommand{\xmpsetoption}[2]{\directlua{opt.set_option('xmp', [[#1]], [[#2]])}}
+\newcommand{\xmpsetoption}[2]{\directlua{
+  xmp_opts:set_option([[#1]], [[#2]])}
+}
 
 %
 % lyluatex and lyluatex-lib
@@ -91,8 +94,8 @@
 
 \DeclareFloatingEnvironment[%
 	fileext=loxmp,
-	listname={\directlua{tex.sprint(opt.get_option('xmp', 'listname'))}},
-	name={\directlua{tex.sprint(opt.get_option('xmp', 'name'))}},
+	listname={\directlua{tex.sprint(xmp_opts.listname)}},
+	name={\directlua{tex.sprint(xmp_opts.name)}},
 	placement=htpb]
 	{lymusxmp}
 

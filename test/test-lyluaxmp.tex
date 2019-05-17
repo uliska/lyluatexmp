@@ -1,6 +1,6 @@
 \documentclass{scrartcl}
 % When lyluatex is *not* loaded it will implicitly be loaded without options
-\usepackage[staffsize=26]{lyluatex}
+\RequirePackage{lyluatex}
 \usepackage[%
   listname=Notenbeispiele,%
   name=Notenbeispiel]{lyluatexmp}
@@ -12,7 +12,7 @@
 % \musicexample[properties]{content-or-filename}
 \begin{lymusxmp}
 \begin{lilypond}
-  { c' d' e' f' g' }
+    { c' d' e' f' g' }
 \end{lilypond}
 \caption{Test-Caption}
 \end{lymusxmp}

@@ -9,7 +9,7 @@ local err, warn, info, log = luatexbase.provides_module({
 })
 
 local lib = require(kpse.find_file("lyluatex-lib.lua") or "lyluatex-lib.lua")
-local optlib = require(kpse.find_file("lyluatex-options.lua") or "lyluatex-options.lua")
+local xmp_opts = xmp_opts -- defined in lyluatexmp.sty
 
 local lfs = require 'lfs'
 
