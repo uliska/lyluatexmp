@@ -8,13 +8,63 @@ local err, warn, info, log = luatexbase.provides_module({
     license            = "GPL 3",
 })
 
+--[[ Import external functionality --]]
+
+-- general tools
 local lib = require(kpse.find_file("lyluatex-lib.lua") or "lyluatex-lib.lua")
+-- option handling support (in addition to the xmp_opts object created in
+-- lyluatexmp.sty)
+local optlib = require(
+  kpse.find_file("lyluatex-options.lua") or "lyluatex-options.lua"
+)
 local xmp_opts = xmp_opts -- defined in lyluatexmp.sty
+-- templating support
+local templates = require(
+  kpse.find_file("lyluatexmp-templates.lua") or "lyluatexmp-templates.lua"
+)
+-- interacting with the file system
+local lfs = require 'lfs' -- not used yet
 
-local lfs = require 'lfs'
+-- LaTeX code templates.
+-- TODO: One day one might want to make this configurable
+-- (by parsing a user-provided Lua file with a table and overwrite
+--  arbitrary values (using xmp_opts:check_local_options)).
+local TEMPLATES = {
+  alignment_left = '\\raggedright',
+  alignment_center = '\\centering',
+  alignment_right = '\\raggedleft',
+  lyfile_musicexample = [[
+\begin{lymusxmp}<<<placement>>>
+<<<alignment>>>
+\lilypondfile<<<lyluatex>>>{<<<filename>>>}
+<<<caption>>><<<label>>>
+\end{lymusxmp}
+  ]],
+}
 
-local xmp = {}      -- namespace for the returned table
+-- namespace for the returned table
+local lyluatexmp = {}
 
--- NOTE: This is completely empty so far
+function lyluatexmp.lyfile_musicexample(options, file)
+--[[
+    Music example based on a LilyPond file.
+    TODO:
+    - add a \captionsetup
+    - add a 'within' option for the numbering (and more provided by 'caption'?)
+    - make sure missing/failed examples are reported properly (incl. colors)
+--]]
+    local opts = optlib.merge_options(
+        xmp_opts.options, xmp_opts:check_local_options(options)
+    )
+    local latex = templates.replace(TEMPLATES.lyfile_musicexample, {
+        alignment = TEMPLATES['alignment_'..opts.align],
+        filename = file,
+        caption = templates.wrap_macro('caption', opts.caption),
+        label = templates.wrap_macro('label', opts.label),
+        lyluatex = templates.wrap_optional_args(opts.lyluatex),
+        placement = templates.wrap_optional_args(opts.placement),
+    })
+    tex.print(latex:explode('\n'))
+end
 
-return xmp
+return lyluatexmp

@@ -1,21 +1,30 @@
 \documentclass{scrartcl}
+\usepackage{libertine}
+
 % When lyluatex is *not* loaded it will implicitly be loaded without options
-\RequirePackage{lyluatex}
+\RequirePackage[pass-fonts]{lyluatex}
 \usepackage[%
   listname=Notenbeispiele,%
-  name=Notenbeispiel]{lyluatexmp}
+  name=Notenbeispiel,]{lyluatexmp}
 
 \begin{document}
 \lyluatexmp
 
+
 % To be wrapped in "speaking" command
 % \musicexample[properties]{content-or-filename}
-\begin{lymusxmp}
+\begin{musicExample}
 \begin{lilypond}
     { c' d' e' f' g' }
 \end{lilypond}
 \caption{Test-Caption}
-\end{lymusxmp}
+\end{musicExample}
+
+\lyfilemusicexample[%
+  align=right,%
+  caption={Hey, an optional caption},%
+  lyluatex={staffsize=26},%
+  ]{test.ly}
 
 \listofmusicexamples
 

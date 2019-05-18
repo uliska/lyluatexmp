@@ -40,10 +40,17 @@
 % Options
 \catcode`-=11
 \directlua{
-  xmp_opts = lyluatex_opt.Opts:new('xmp_opts', {
+  local _opts = require(
+    kpse.find_file("lyluatex-options.lua") or "lyluatex-options.lua"
+  )
+  xmp_opts = _opts.Opts:new('xmp_opts', {
     ['align'] = {'center', 'left', 'right'},
-    ['name'] = {'Music Example', lyluatex_opt.is_str },
-    ['listname'] = {'List of Music Examples', lyluatex_opt.is_str },
+    ['caption'] = {''},
+    ['label'] = {''},
+    ['name'] = {'Music Example'},
+    ['listname'] = {'List of Music Examples'},
+    ['lyluatex'] = {''},
+    ['placement'] = {''},
   })
 }
 \directlua{
@@ -70,9 +77,6 @@
 \@ifundefined{KOMAClassName}{\RequirePackage{scrextend}}{}
 \makeatother
 
-% Allow definition of the new float environment
-\RequirePackage{newfloat}
-
 % TODO: Don't require this package but make behaviour dependent on
 % its inclusion (or xcolor)
 \RequirePackage{color}
@@ -92,6 +96,18 @@
 % captions of the non-float items)
 \RequirePackage{caption}
 
+% Allow definition of the new float environment
+\RequirePackage{newfloat}
+
+% The core floating environment to wrap music examples in,
+% provides the counter and the configurability through
+% \captionsetup (although the main configuration is already
+% achieved directly by accessing the package options.)
+    % TODO: Make these configurable as global and local options
+    % too (provide a dedicated command or modify xmpsetoption
+    % so it processes differently when certain options are modified.)
+% This environment can be used directly, but it is recommended
+% to be used with the dedicated commands and environments provided too.
 \DeclareFloatingEnvironment[%
 	fileext=loxmp,
 	listname={\directlua{tex.sprint(xmp_opts.listname)}},
@@ -99,4 +115,36 @@
 	placement=htpb]
 	{lymusxmp}
 
+% Syntactic sugar to have a better sounding command for
+% the list of music examples.
 \newcommand*{\listofmusicexamples}{\listoflymusxmps}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Main user interface for entering music examples
+
+% Simple wrapper to enter a music example with the current
+% alignment and package options but arbitrary content.
+\newenvironment{musicExample}[1][]{%
+\begin{lymusxmp}[#1]
+\directlua{lyluatexmp.align()}%
+% TODO: Add a \captionsetup here, using the current options
+% TODO: replace lyluatexmp.align() with a *working* and more
+% extensive function to provide the actual configuration.
+}
+{%
+\end{lymusxmp}%
+}
+
+% Music example created from a LilyPond file.
+% The mandatory argument provides the LilyPond file to be used,
+% with or without extension, as a relative or absolute path
+% (relative would be to the *current directory* from which
+% the document is compiled.)
+% The optional argument provides additional configuration but
+% really should be used to provide at least a caption and a label.
+% For details please refer to the manual.
+\newcommand*{\lyfilemusicexample}[2][]{
+  \directlua{lyluatexmp.lyfile_musicexample(
+    "\luatexluaescapestring{\unexpanded{#1}}",
+    "\luatexluaescapestring{\unexpanded{#2}}"
+  )}}
