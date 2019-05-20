@@ -35,7 +35,7 @@ local TEMPLATES = {
   alignment_right = '\\raggedleft',
   lyfile_musicexample = [[
 \begin{lymusxmp}<<<placement>>>
-<<<alignment>>>
+<<<alignment>>><<<captionsetup>>>
 \lilypondfile<<<lyluatex>>>{<<<filename>>>}
 <<<caption>>><<<label>>>
 \end{lymusxmp}
@@ -56,14 +56,20 @@ function lyluatexmp.lyfile_musicexample(options, file)
     local opts = optlib.merge_options(
         xmp_opts.options, xmp_opts:check_local_options(options)
     )
+    local captionsetup = ''
+    if opts.captionsetup then
+        captionsetup = string.format('\\captionsetup{%s}', opts.captionsetup)
+    end
     local latex = templates.replace(TEMPLATES.lyfile_musicexample, {
         alignment = TEMPLATES['alignment_'..opts.align],
+        captionsetup = captionsetup,
         filename = file,
         caption = templates.wrap_macro('caption', opts.caption),
         label = templates.wrap_macro('label', opts.label),
         lyluatex = templates.wrap_optional_args(opts.lyluatex),
         placement = templates.wrap_optional_args(opts.placement),
     })
+    print(latex)
     tex.print(latex:explode('\n'))
 end
 
