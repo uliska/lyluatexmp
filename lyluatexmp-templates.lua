@@ -44,6 +44,15 @@ function templates.replace(template, options)
 end
 
 
+function templates.wrap_kv_option(key, value)
+    if value and value ~= '' then
+        return string.format([[%s={%s}]], key, value)
+    else
+        return ''
+    end    
+end
+
+
 function templates.wrap_macro(macro, value)
 --[[
     If value is not empty return it wrapped in a macro, or an empty string.
