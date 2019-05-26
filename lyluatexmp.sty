@@ -46,6 +46,8 @@
   xmp_opts = _opts.Opts:new('xmp_opts', {
     ['align'] = {'center', 'left', 'right'},
     ['caption'] = {''},
+    ['crefname'] = {'ex.|ex.'},
+    ['Crefname'] = {'Music example|Music examples'},
     ['label'] = {''},
     ['name'] = {'Music Example'},
     ['listname'] = {'List of Music Examples'},
@@ -114,6 +116,12 @@
 	name={\directlua{tex.sprint(xmp_opts.name)}},
 	placement=htpb]
 	{lymusxmp}
+
+% Configure cref names if cleveref is loaded
+\makeatletter
+\@ifpackageloaded{cleveref}%
+{\directlua{lyluatexmp.set_cref_names()}}%
+\makeatother
 
 % Syntactic sugar to have a better sounding command for
 % the list of music examples.

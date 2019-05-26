@@ -67,4 +67,37 @@ function lyluatexmp.lyfile_musicexample(options, file)
     tex.print(latex:explode('\n'))
 end
 
+function lyluatexmp.set_cref_names()
+--[[
+    This function is called when -- after loading lyluatexmp --
+    it is detected that 'cleveref' has already been loaded.
+    Look up the crefname and Crefname options and use them.
+    If the option is not formatte properly (both crefname and
+    Crefname must be formatted as singular/plural names separated
+    by a "|" pipe smybol) the English fallback values are chosen
+--]]
+    local crefname = xmp_opts.crefname
+    local Crefname = xmp_opts.Crefname
+    local cref_sing, cref_plur = crefname:match('(.-)%s-|%s-([^%s]*)')
+    local Cref_sing, Cref_plur = Crefname:match('(.-)%s-|%s-([^%s]*)')
+    if not (cref_sing and Cref_sing) then
+        err(string.format([[
+Malformated option 'crefname' or 'Crefname'
+(expected: two elements separated by "|").
+crefname={%s},
+Crefname={%s}]],
+        crefname, Crefname))
+    end
+    tex.print(string.format(
+        '\\crefname{lymusxmp}{%s}{%s}',
+        cref_sing or 'ex.',
+        cref_plur or 'ex.'
+    ))
+    tex.print(string.format(
+        '\\Crefname{lymusxmp}{%s}{%s}',
+        Cref_sing or 'Music example',
+        Cref_plur or 'Music examples'
+    ))
+end
+
 return lyluatexmp
