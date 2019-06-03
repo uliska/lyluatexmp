@@ -40,12 +40,12 @@
 % Options
 \catcode`-=11
 \directlua{
-  local _opts = require(
-    kpse.find_file("lyluatex-options.lua") or "lyluatex-options.lua"
-  )
+  local _opts = lyluatex_options
   xmp_opts = _opts.Opts:new('xmp_opts', {
     ['align'] = {'center', 'left', 'right'},
     ['caption'] = {''},
+    ['float'] = {'true', 'false', ''},
+      ['nofloat'] = {'default', _opts.is_neg},
     ['crefname'] = {'ex.|ex.'},
     ['Crefname'] = {'Music example|Music examples'},
     ['label'] = {''},
@@ -116,6 +116,17 @@
 	name={\directlua{tex.sprint(xmp_opts.name)}},
 	placement=htpb]
 	{lymusxmp}
+
+% non-floating environment to wrap music examples in
+% So far this does not provide any layout or other information
+% but is used by the Lua functions to inject a \captionof
+% item.
+%
+% NOTE: The optional argument doesn't do anything
+% but is “accepted“ to ensure compatibility with lymusxmp
+\newenvironment{lymusxmpnf}[1][]{\par\bigskip}{}
+
+
 
 % Configure cref names if cleveref is loaded
 \makeatletter
