@@ -8,16 +8,6 @@ local err, warn, info, log = luatexbase.provides_module({
     license            = "GPL 3",
 })
 
---[[ Import external functionality --]]
-
--- general tools
-local lib = require(kpse.find_file("lyluatex-lib.lua") or "lyluatex-lib.lua")
--- option handling support (in addition to the xmp_opts object created in
--- lyluatexmp.sty)
-local optlib = require(
-  kpse.find_file("lyluatex-options.lua") or "lyluatex-options.lua"
-)
-local xmp_opts = xmp_opts -- defined in lyluatexmp.sty
 -- templating support
 local templates = require(
   kpse.find_file("lyluatexmp-templates.lua") or "lyluatexmp-templates.lua"
@@ -53,7 +43,7 @@ function lyluatexmp.lyfile_musicexample(options, file)
     - add a 'within' option for the numbering (and more provided by 'caption'?)
     - make sure missing/failed examples are reported properly (incl. colors)
 --]]
-    local opts = optlib.merge_options(
+    local opts = lyluatex_options.merge_options(
         xmp_opts.options, xmp_opts:check_local_options(options)
     )
     local non_float = ''
