@@ -26,6 +26,7 @@ local TEMPLATES = {
   lyfile_musicexample = [[
 \begin{lymusxmp<<<nonfloat>>>}<<<placement>>>
 <<<alignment>>>
+<<<startlabel>>>
 \lilypondfile<<<lyluatex>>>{<<<filename>>>}
 <<<caption>>><<<label>>>
 \end{lymusxmp<<<nonfloat>>>}
@@ -57,6 +58,7 @@ function lyluatexmp.lyfile_musicexample(options, file)
         nonfloat = non_float,
         filename = file,
         caption = templates.wrap_macro('caption'..caption_suffix, opts.caption),
+        startlabel = templates.wrap_macro('label', opts.startlabel),
         label = templates.wrap_macro('label', opts.label),
         lyluatex = templates.wrap_optional_args(opts.lyluatex),
         placement = templates.wrap_optional_args(opts.placement),
