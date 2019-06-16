@@ -38,7 +38,7 @@ local TEMPLATES = {
 }
 
 \def\betweenLilyPondSystem #1{%
-  \captionsetup{labelformat=empty}
+  \captionsetup{labelformat=empty,skip=-5pt}
   <<<empty_caption>>>
 
   \endLyMusXmpEnv
@@ -47,6 +47,7 @@ local TEMPLATES = {
 }
 
 \def\postLilyPondExample{%
+  \captionsetup{aboveskip=<<<above_caption_skip>>>,belowskip=<<<below_caption_skip>>>}
   <<<caption>>>
   <<<label>>>
   \endLyMusXmpEnv
@@ -87,6 +88,8 @@ function lyluatexmp.lyfile_musicexample(options, file)
         empty_caption = empty_caption,
         filename = file,
         caption = templates.wrap_macro('caption'..caption_suffix, opts.caption),
+        above_caption_skip = opts.above_caption_skip,
+        below_caption_skip = opts.below_caption_skip,
         label = templates.wrap_macro('label', opts.label),
         lyluatex = templates.wrap_optional_args(opts.lyluatex),
         placement = templates.wrap_optional_args(opts.placement),
