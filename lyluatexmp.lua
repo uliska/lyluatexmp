@@ -24,11 +24,36 @@ local TEMPLATES = {
   alignment_center = '\\centering',
   alignment_right = '\\raggedleft',
   lyfile_musicexample = [[
-\begin{lymusxmp<<<nonfloat>>>}<<<placement>>>
-<<<alignment>>>
+\def\beginLyMusXmpEnv{%
+  \begin{lymusxmp<<<nonfloat>>>}<<<placement>>>
+  <<<alignment>>>
+}
+
+\def\endLyMusXmpEnv{%
+  \end{lymusxmp<<<nonfloat>>>}
+}
+
+\def\preLilyPondExample{%
+  \beginLyMusXmpEnv
+}
+
+\def\betweenLilyPondSystem #1{%
+  \captionsetup{labelformat=empty,skip=-5pt}
+  <<<empty_caption>>>
+
+  \endLyMusXmpEnv
+  \beginLyMusXmpEnv
+  <<<continued_float>>>
+}
+
+\def\postLilyPondExample{%
+  \captionsetup{aboveskip=<<<above_caption_skip>>>,belowskip=<<<below_caption_skip>>>}
+  <<<caption>>>
+  <<<label>>>
+  \endLyMusXmpEnv
+}
+
 \lilypondfile<<<lyluatex>>>{<<<filename>>>}
-<<<caption>>><<<label>>>
-\end{lymusxmp<<<nonfloat>>>}
   ]],
 }
 
@@ -47,16 +72,24 @@ function lyluatexmp.lyfile_musicexample(options, file)
         xmp_opts.options, xmp_opts:check_local_options(options)
     )
     local non_float = ''
+    local continued_float = '\\ContinuedFloat'
+    local empty_caption = '\\caption[]'
     local caption_suffix = ''
     if not opts.float then
       non_float = 'nf'
+      continued_float = ''
       caption_suffix = 'of{lymusxmp}'
+      empty_caption = '\\caption'..caption_suffix..'*'
     end
     local latex = templates.replace(TEMPLATES.lyfile_musicexample, {
         alignment = TEMPLATES['alignment_'..opts.align],
         nonfloat = non_float,
+        continued_float = continued_float,
+        empty_caption = empty_caption,
         filename = file,
         caption = templates.wrap_macro('caption'..caption_suffix, opts.caption),
+        above_caption_skip = opts.above_caption_skip,
+        below_caption_skip = opts.below_caption_skip,
         label = templates.wrap_macro('label', opts.label),
         lyluatex = templates.wrap_optional_args(opts.lyluatex),
         placement = templates.wrap_optional_args(opts.placement),

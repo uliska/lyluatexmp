@@ -53,6 +53,8 @@
     ['listname'] = {'List of Music Examples'},
     ['lyluatex'] = {''},
     ['placement'] = {''},
+    ['above_caption_skip'] = {'10pt'},
+    ['below_caption_skip'] = {'15pt'},
   })
 }
 \directlua{
@@ -114,7 +116,7 @@
 	fileext=loxmp,
 	listname={\directlua{tex.sprint(xmp_opts.listname)}},
 	name={\directlua{tex.sprint(xmp_opts.name)}},
-	placement=htpb]
+	placement=h]
 	{lymusxmp}
 
 % non-floating environment to wrap music examples in
