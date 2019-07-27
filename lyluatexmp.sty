@@ -38,10 +38,9 @@
 \RequirePackage{lyluatex}
 
 % Options
-\catcode`-=11
 \directlua{
-  local _opts = lyluatex_options
-  xmp_opts = _opts.Opts:new('xmp_opts', {
+  local _opts = lua_options
+  _opts.register('lyluatexmp', {
     ['align'] = {'center', 'left', 'right'},
     ['caption'] = {''},
     ['float'] = {'true', 'false', ''},
@@ -59,15 +58,9 @@
 \directlua{
   lyluatexmp = require(kpse.find_file("lyluatexmp.lua") or "lyluatexmp.lua")
 }
-\catcode`-=12
 
 % lyluatexmp “Logo”
 \newcommand{\lyluatexmp}{\textit{ly}\LuaTeX\textsc{mp}}
-
-% Command to change options during the document
-\newcommand{\xmpsetoption}[2]{\directlua{
-  xmp_opts:set_option([[#1]], [[#2]])}
-}
 
 %
 % lyluatex and lyluatex-lib
@@ -113,8 +106,8 @@
 % to be used with the dedicated commands and environments provided too.
 \DeclareFloatingEnvironment[%
 	fileext=loxmp,
-	listname={\directlua{tex.sprint(xmp_opts.listname)}},
-	name={\directlua{tex.sprint(xmp_opts.name)}},
+	listname=\useluaoption{lyluatexmp}{listname},
+	name=\useluaoption{lyluatexmp}{name},
 	placement=htpb]
 	{lymusxmp}
 

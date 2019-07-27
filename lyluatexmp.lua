@@ -8,6 +8,8 @@ local err, warn, info, log = luatexbase.provides_module({
     license            = "GPL 3",
 })
 
+local lyluatexmp_opts = lua_options.client('lyluatexmp')
+
 -- templating support
 local templates = require(
   kpse.find_file("lyluatexmp-templates.lua") or "lyluatexmp-templates.lua"
@@ -18,7 +20,7 @@ local lfs = require 'lfs' -- not used yet
 -- LaTeX code templates.
 -- TODO: One day one might want to make this configurable
 -- (by parsing a user-provided Lua file with a table and overwrite
---  arbitrary values (using xmp_opts:check_local_options)).
+--  arbitrary values (using lyluatexmp_opts:check_local_options)).
 local TEMPLATES = {
   alignment_left = '\\raggedright',
   alignment_center = '\\centering',
@@ -44,8 +46,8 @@ function lyluatexmp.lyfile_musicexample(options, file)
     - add a 'within' option for the numbering (and more provided by 'caption'?)
     - make sure missing/failed examples are reported properly (incl. colors)
 --]]
-    local opts = lyluatex_options.merge_options(
-        xmp_opts.options, xmp_opts:check_local_options(options)
+    local opts = lua_options.merge_options(
+        lyluatexmp_opts.options, lyluatexmp_opts:check_local_options(options)
     )
     local non_float = ''
     local caption_suffix = ''
@@ -75,8 +77,8 @@ function lyluatexmp.set_cref_names()
     Crefname must be formatted as singular/plural names separated
     by a "|" pipe smybol) the English fallback values are chosen
 --]]
-    local crefname = xmp_opts.crefname
-    local Crefname = xmp_opts.Crefname
+    local crefname = lyluatexmp_opts.crefname
+    local Crefname = lyluatexmp_opts.Crefname
     local cref_sing, cref_plur = crefname:match('(.-)%s-|%s-([^%s]*)')
     local Cref_sing, Cref_plur = Crefname:match('(.-)%s-|%s-([^%s]*)')
     if not (cref_sing and Cref_sing) then
