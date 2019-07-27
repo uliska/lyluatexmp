@@ -13,18 +13,24 @@ local opts = lua_options.client('lyluatexmp')
 
 EXAMPLES = lua_formatters:new_client{
     name = 'lyluatexmp',
-    namespace = {},
-    prefix = 'lymusxmp',
 }
 
-function EXAMPLES:env_align(alignment)
+-------------------------------------------------------
+-- Helper functions
+
+local function _env_alignment()
     local macros = {
         left = 'raggedright',
         center = 'centering',
         right = 'raggedleft'
     }
-    return '\\' .. macros[alignment]
+    return function (alignment)
+        return '\\' .. macros[alignment]
+    end
 end
+
+-- Return the macro used for aligning the content of an environment
+local env_alignment = _env_alignment()
 
 function EXAMPLES:set_cref_names()
 --[[
@@ -58,5 +64,59 @@ end
 if lib.package_loaded('cleveref') then
     EXAMPLES:set_cref_names()
 end
+
+-----------------------------------
+-- File based music example
+
+local function lyfile_musicexample(self, filename, options)
+--[[
+    Music example based on a LilyPond file.
+    TODO:
+    - add a \captionsetup
+    - add a 'within' option for the numbering (and more provided by 'caption'?)
+    - make sure missing/failed examples are reported properly (incl. colors)
+--]]
+
+    local function float()
+        local non_float, caption_suffix = '', ''
+        if not opts.float then
+          non_float, caption_suffix = 'nf', 'of{lymusxmp}'
+        end
+        return non_float, caption_suffix
+    end
+
+    -- TODO: Understand how local options work together here. Do they even
+    -- *have* to be merged? Or isn't that already done through validation?
+    -- Can that be made to work?
+    local opts = lua_options.merge_options(
+        opts.options, options
+    )
+    local non_float, caption_suffix = float()
+    return self:apply_template{
+        alignment = env_alignment(opts.align),
+        nonfloat = non_float,
+        filename = filename,
+        caption = self:wrap_macro('caption'..caption_suffix, opts.caption),
+        startlabel = self:wrap_macro('label', opts.startlabel),
+        label = self:wrap_macro('label', opts.label),
+        lyluatex = self:wrap_optional_arg(opts.lyluatex),
+        placement = self:wrap_optional_arg(opts.placement),
+    }
+end
+
+EXAMPLES:add_formatters('General', {
+    lyfilemusicexample = {
+        comment = "Music example created from a LilyPond file",
+        func = lyfile_musicexample,
+        template = [[
+\begin{lymusxmp<<<nonfloat>>>}<<<placement>>>
+<<<alignment>>>
+<<<startlabel>>>
+\lilypondfile<<<lyluatex>>>{<<<filename>>>}
+<<<caption>>><<<label>>>
+\end{lymusxmp<<<nonfloat>>>}
+]],
+    },
+})
 
 return EXAMPLES

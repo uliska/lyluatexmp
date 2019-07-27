@@ -57,11 +57,8 @@
     ['placement'] = {''},
   })
 }
-\directlua{
-  lyluatexmp = require(kpse.find_file("lyluatexmp.lua") or "lyluatexmp.lua")
-}
 
-\addLuaFormatters{lyluatexmp-formatters}
+\addLuaFormatters{lyluatexmp-formatters.lua}
 
 % lyluatexmp “Logo”
 \newcommand{\lyluatexmp}{\textit{ly}\LuaTeX\textsc{mp}}
@@ -144,17 +141,3 @@
 {%
 \end{lymusxmp}%
 }
-
-% Music example created from a LilyPond file.
-% The mandatory argument provides the LilyPond file to be used,
-% with or without extension, as a relative or absolute path
-% (relative would be to the *current directory* from which
-% the document is compiled.)
-% The optional argument provides additional configuration but
-% really should be used to provide at least a caption and a label.
-% For details please refer to the manual.
-\newcommand*{\lyfilemusicexample}[2][]{
-  \directlua{lyluatexmp.lyfile_musicexample(
-    "\luatexluaescapestring{\unexpanded{#1}}",
-    "\luatexluaescapestring{\unexpanded{#2}}"
-  )}}
