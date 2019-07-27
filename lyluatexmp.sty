@@ -133,7 +133,8 @@
 % alignment and package options but arbitrary content.
 \newenvironment{musicExample}[1][]{%
 \begin{lymusxmp}[#1]
-\directlua{lyluatexmp.align()}%
+% TODO: manage to get to the alignment (processed through env_alignment())
+%\directlua{lyluatexmp.align()}%
 % TODO: Add a \captionsetup here, using the current options
 % TODO: replace lyluatexmp.align() with a *working* and more
 % extensive function to provide the actual configuration.
