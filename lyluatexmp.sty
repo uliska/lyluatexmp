@@ -37,7 +37,9 @@
 % minibox, environ, currfile, pdfpages, varwidth and metalogo
 \RequirePackage{lyluatex}
 
-% Options
+% The workload of creating macros is done by luaformatters
+\RequirePackage{luaformatters}
+
 \directlua{
   local _opts = lua_options
   _opts.register('lyluatexmp', {
@@ -58,6 +60,8 @@
 \directlua{
   lyluatexmp = require(kpse.find_file("lyluatexmp.lua") or "lyluatexmp.lua")
 }
+
+\addLuaFormatters{lyluatexmp-formatters}
 
 % lyluatexmp “Logo”
 \newcommand{\lyluatexmp}{\textit{ly}\LuaTeX\textsc{mp}}
@@ -120,13 +124,6 @@
 % but is “accepted“ to ensure compatibility with lymusxmp
 \newenvironment{lymusxmpnf}[1][]{\par\bigskip}{}
 
-
-
-% Configure cref names if cleveref is loaded
-\makeatletter
-\@ifpackageloaded{cleveref}%
-{\directlua{lyluatexmp.set_cref_names()}}%
-\makeatother
 
 % Syntactic sugar to have a better sounding command for
 % the list of music examples.
