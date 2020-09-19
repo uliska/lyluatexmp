@@ -5,11 +5,11 @@
 \RequirePackage[pass-fonts]{lyluatex}
 \usepackage[%
   listname=Notenbeispiele,%
-  name=Notenbeispiel,]{lyluatexmp}
+  name=Notenbeispiel,
+  crefname=Bsp.|Bsp.]{lyluatexmp}
 
 \begin{document}
 \lyluatexmp
-
 
 % To be wrapped in "speaking" command
 % \musicexample[properties]{content-or-filename}
@@ -24,6 +24,7 @@
   align=right,%
   caption={Hey, an optional caption},%
   lyluatex={staffsize=26},%
+  label=my-example,%
   ]{test.ly}
 
 \listofmusicexamples
